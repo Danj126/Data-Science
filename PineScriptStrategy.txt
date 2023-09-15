@@ -1,0 +1,193 @@
+//@version=5
+strategy("Consecutive Candles Strategy with Stop Loss and Limit Orders", overlay = true)
+
+consecutiveCandles = input(5, title = "Consecutive Candles")
+ticksPerPoint = input(1, title = "Ticks per Point")
+exitOffsetPoints = input(70, title = "Exit Offset Points")
+exitOffsetPoints2 = input(68, title = "Exit Offset Points")
+
+var color currentColor = na
+var int consecutiveCounter = 0
+var float entryPrice = na
+int trade_num = strategy.opentrades - 1 
+
+var float exitLimitLong = na
+var float exitStopLong = na
+var float exitLimitShort = na
+var float exitStopShort = na
+
+tradeTime1Start = timestamp(year, month, dayofmonth, 8, 30) // 8:30 AM
+tradeTime1End = timestamp(year, month, dayofmonth, 11, 00)   // 9:30 AM
+tradeTime2Start = timestamp(year, month, dayofmonth, 12, 00) // 8:30 AM
+tradeTime2End = timestamp(year, month, dayofmonth, 15, 00)   // 9:30 AM
+
+
+if ta.change(close)
+    if close > open
+        currentColor := color.green
+    else if close < open
+        currentColor := color.red
+    else
+        currentColor := na
+
+    if not na(currentColor)
+        if currentColor != currentColor[1]
+            consecutiveCounter := 1
+        else
+            consecutiveCounter := consecutiveCounter + 1
+
+
+tradeTime1Condition = time >= tradeTime1Start and time <= tradeTime1End
+tradeTime2Condition = time >= tradeTime2Start and time <= tradeTime2End
+
+if tradeTime1Condition or tradeTime2Condition
+    if consecutiveCounter >= consecutiveCandles
+        if currentColor == color.green and strategy.position_size == 0
+            entryPrice := open
+            strategy.entry("Buy", strategy.long)
+            consecutiveCounter := 0
+
+        if currentColor == color.red and strategy.position_size == 0
+            //entryPrice := open
+            //strategy.entry("Sell", strategy.short)
+            consecutiveCounter := 0
+
+
+
+exitLimitLong := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
+exitStopLong := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints2 * ticksPerPoint
+exitLimitShort := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints * ticksPerPoint
+exitStopShort := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
+
+
+if strategy.position_size > 0
+    strategy.exit("Exit Long", from_entry = "Buy", limit = exitLimitLong, stop = exitStopLong)
+
+//else if strategy.position_size < 0
+//    strategy.exit("Exit Short", from_entry = "Sell", limit = exitLimitShort, stop = exitStopShort)
+
+
+
+
+
+
+
+
+
+//@version=5
+strategy("Consecutive Candles Strategy with Stop Loss and Limit Orders", overlay = true)
+
+consecutiveCandles = input(5, title = "Consecutive Candles")
+ticksPerPoint = input(1, title = "Ticks per Point")
+exitOffsetPoints = input(70, title = "Exit Offset Points")
+exitOffsetPoints2 = input(70, title = "Exit Offset Points")
+
+var color currentColor = na
+var int consecutiveCounter = 0
+var float entryPrice = na
+int trade_num = strategy.opentrades - 1 
+var price1 = 0.0
+var price2 = 0.0
+var price3 = 0.0
+var price4 = 0.0
+var price5 = 0.0
+
+var float exitLimitLong = na
+var float exitStopLong = na
+var float exitLimitShort = na
+var float exitStopShort = na
+
+tradeTime1Start = timestamp(year, month, dayofmonth, 8, 30) // 8:30 AM
+tradeTime1End = timestamp(year, month, dayofmonth, 11, 00)   // 9:30 AM
+tradeTime2Start = timestamp(year, month, dayofmonth, 12, 00) // 8:30 AM
+tradeTime2End = timestamp(year, month, dayofmonth, 15, 00)   // 9:30 AM
+
+candleRange = high - low
+var currentCount = 0.0
+
+if close[1] > open[1]
+    currentCount := currentCount + candleRange[1]
+    price1 := candleRange[1]
+else if close[1] < open[1]
+    currentCount := currentCount - candleRange[1]
+
+if close[2] > open[2]
+    currentCount := currentCount + candleRange[2]
+    price2 := candleRange[2]
+else if close[2] < open[2]
+    currentCount := currentCount - candleRange[2]
+
+if close[3] > open[3]
+    currentCount := currentCount + candleRange[3]
+    price3 := candleRange[3]
+else if close[3] < open[3]
+    currentCount := currentCount - candleRange[3]
+
+if close[4] > open[4]
+    currentCount := currentCount + candleRange[4]
+    price4 := candleRange[4]
+else if close[4] < open[4]
+    currentCount := currentCount - candleRange[4]
+
+if close[5] > open[5]
+    currentCount := currentCount + candleRange[5]
+    price5 := candleRange[5]
+else if close[5] < open[5]
+    currentCount := currentCount - candleRange[5]
+
+if ta.change(close)
+    if close > open
+        currentColor := color.green
+    else if close < open
+        currentColor := color.red
+    else
+        currentColor := na
+
+    if not na(currentColor) //and entry == false
+        if currentColor != currentColor[1]
+            consecutiveCounter := 1
+        else
+            consecutiveCounter := consecutiveCounter + 1
+
+
+tradeTime1Condition = time >= tradeTime1Start and time <= tradeTime1End
+tradeTime2Condition = time >= tradeTime2Start and time <= tradeTime2End
+
+if tradeTime1Condition or tradeTime2Condition
+    if consecutiveCounter >= consecutiveCandles
+        if currentColor == color.green //and strategy.position_size == 0
+            entryPrice := open
+            strategy.entry("Buy", strategy.long)
+            consecutiveCounter := 0
+
+        if currentColor == color.red and strategy.position_size == 0
+            entryPrice := open
+            //strategy.entry("Sell", strategy.short)
+            consecutiveCounter := 0
+
+
+
+exitLimitLong := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
+exitStopLong := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints2 * ticksPerPoint
+exitLimitShort := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints * ticksPerPoint
+exitStopShort := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
+
+
+
+//plotshape(exitLimitLong, "B", shape.triangleup, location.abovebar, color.blue)
+//plotshape(exitLimitShort, "O", shape.triangledown, location.absolute, color.orange)
+
+
+if strategy.position_size > 0
+    strategy.exit("Exit Long", from_entry = "Buy", limit = exitLimitLong, stop = exitStopLong)
+//if strategy.position_size < 0
+    //strategy.exit("Exit Short", from_entry = "Sell", limit = exitLimitShort, stop = exitStopShort)
+    
+currentCount := 0
+price1 := 0
+price2 := 0
+price3 := 0
+price4 := 0
+price5 := 0
+
+

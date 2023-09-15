@@ -1,2 +1,1 @@
-# EDA
-Data Analysis
+# Data Projects

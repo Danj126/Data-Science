@@ -3,38 +3,41 @@ strategy("Consecutive Candles Strategy by Daniel C", overlay = true)
 //Timeframe = 30 minute candles
 //Variables from real results are changed to protect strategy's integrity
 
+//inputs
 consecutiveCandles = input(3, title = "Consecutive Candles")
 ticksPerPoint = input(1, title = "Ticks per Point")
 exitOffsetPoints = input(70, title = "Exit Offset Points")
 exitOffsetPoints2 = input(70, title = "Exit Offset Points")
 candleEntrySize = input(50, title = "Candle Entry Size")
+candleSizeReview = input(4, title = "Candle Size Review")
 
+//initializers
 var color currentColor = na
 var int consecutiveCounter = 0
 var float entryPrice = na
 int trade_num = strategy.opentrades - 1 
-
 var float exitLimitLong = na
 var float exitStopLong = na
 var float exitLimitShort = na
 var float exitStopShort = na
 
+//trading time variables
 tradeTime1Start = timestamp(year, month, dayofmonth, 8, 30) // 8:30 AM
 tradeTime1End = timestamp(year, month, dayofmonth, 11, 00)   // 9:30 AM
 tradeTime2Start = timestamp(year, month, dayofmonth, 12, 00) // 8:30 AM
 tradeTime2End = timestamp(year, month, dayofmonth, 15, 00)   // 9:30 AM
 
-candleRange = high - low
+//candle size measurements
 var currentCount = 0.0
 var float[] price = array.new_float(5)
-
-for i = 1 to 4  
+for i = 1 to candleSizeReview  
     if close[i] > open[i]
         currentCount := currentCount + high[i] - low[i]
         array.set(price, i - 1, high[i] - low[i])  
     else if close[i] < open[i]
         currentCount := currentCount - high[i] - low[i]
 
+//candle color consecutive counter
 if ta.change(close)
     if close > open
         currentColor := color.green
@@ -53,6 +56,7 @@ if ta.change(close)
 tradeTime1Condition = time >= tradeTime1Start and time <= tradeTime1End
 tradeTime2Condition = time >= tradeTime2Start and time <= tradeTime2End
 
+//Entry conditions
 if tradeTime1Condition or tradeTime2Condition
     if consecutiveCounter >= consecutiveCandles //and currentCount > candleEntrySize
         if currentColor == color.green 
@@ -62,8 +66,8 @@ if tradeTime1Condition or tradeTime2Condition
 
 currentCount := 0
 
+//Exit Conditions
 exitLimitLong := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
 exitStopLong := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints2 * ticksPerPoint
-
 if strategy.position_size > 0
     strategy.exit("Exit Long", from_entry = "Buy", limit = exitLimitLong, stop = exitStopLong)

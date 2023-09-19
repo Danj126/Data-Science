@@ -1,4 +1,4 @@
-//Consecutive candle strategy by Daniel C.
+//@version=5
 strategy("Consecutive Candles Strategy with Stop Loss and Limit Orders", overlay = true)
 
 consecutiveCandles = input(3, title = "Consecutive Candles")
@@ -25,7 +25,7 @@ candleRange = high - low
 var currentCount = 0.0
 var float[] price = array.new_float(5)
 
-for i = 1 to 5  
+for i = 1 to 4  
     if close[i] > open[i]
         currentCount := currentCount + high[i] - low[i]
         array.set(price, i - 1, high[i] - low[i])  
@@ -51,11 +51,13 @@ tradeTime1Condition = time >= tradeTime1Start and time <= tradeTime1End
 tradeTime2Condition = time >= tradeTime2Start and time <= tradeTime2End
 
 if tradeTime1Condition or tradeTime2Condition
-    if consecutiveCounter >= consecutiveCandles
+    if consecutiveCounter >= consecutiveCandles //and currentCount > 50
         if currentColor == color.green 
             entryPrice := open
             strategy.entry("Buy", strategy.long)
             consecutiveCounter := 0
+
+currentCount := 0
 
 exitLimitLong := strategy.opentrades.entry_price(trade_num) + exitOffsetPoints * ticksPerPoint
 exitStopLong := strategy.opentrades.entry_price(trade_num) - exitOffsetPoints2 * ticksPerPoint

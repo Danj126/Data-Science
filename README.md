@@ -1,6 +1,6 @@
-## Data Projects
+# Data Projects
 
-# Pinescript Strategy:
+## Pinescript Strategy:
 
 Changed variable contents for strategy privacy. Produced current winrate of 68%, max drawdown of 67%, profit of 750%, and Sharpe ratio of 0.31. 
 

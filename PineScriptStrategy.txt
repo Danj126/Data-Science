@@ -1,5 +1,7 @@
 //@version=5
-strategy("Consecutive Candles Strategy with Stop Loss and Limit Orders", overlay = true)
+strategy("Consecutive Candles Strategy by Daniel C", overlay = true)
+//Timeframe = 30 minute candles
+//Variables from real results are changed to protect strategy's integrity
 
 consecutiveCandles = input(3, title = "Consecutive Candles")
 ticksPerPoint = input(1, title = "Ticks per Point")

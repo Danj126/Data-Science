@@ -7,6 +7,7 @@ consecutiveCandles = input(3, title = "Consecutive Candles")
 ticksPerPoint = input(1, title = "Ticks per Point")
 exitOffsetPoints = input(70, title = "Exit Offset Points")
 exitOffsetPoints2 = input(70, title = "Exit Offset Points")
+candleEntrySize = input(50, title = "Candle Entry Size")
 
 var color currentColor = na
 var int consecutiveCounter = 0
@@ -53,7 +54,7 @@ tradeTime1Condition = time >= tradeTime1Start and time <= tradeTime1End
 tradeTime2Condition = time >= tradeTime2Start and time <= tradeTime2End
 
 if tradeTime1Condition or tradeTime2Condition
-    if consecutiveCounter >= consecutiveCandles //and currentCount > 50
+    if consecutiveCounter >= consecutiveCandles //and currentCount > candleEntrySize
         if currentColor == color.green 
             entryPrice := open
             strategy.entry("Buy", strategy.long)
